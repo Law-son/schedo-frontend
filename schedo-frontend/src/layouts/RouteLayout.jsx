@@ -1,4 +1,4 @@
-// import "./routeLayout.css";
+import "./routeLayout.css";
 import Main from "../components/main/Main";
 
 const RouteLayout = () => {

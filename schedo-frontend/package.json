@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15",
+    "flowbite": "^2.5.2",
+    "flowbite-react": "^0.10.2",
     "lottie-react": "^2.4.0",
     "react": "^18.3.1",
     "react-auth-kit": "^3.1.3",

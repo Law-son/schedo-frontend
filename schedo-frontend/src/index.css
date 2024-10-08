@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Reset margins and padding globally */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure the body and html take up the full viewport */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}

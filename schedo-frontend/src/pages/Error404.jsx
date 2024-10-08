@@ -2,8 +2,8 @@ import React from 'react'
 
 const Error404 = () => {
   return (
-    <div>
-      
+    <div className='text-primary-blue'>
+      404
     </div>
   )
 }
