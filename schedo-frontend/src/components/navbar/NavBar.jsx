@@ -28,7 +28,7 @@ const NavBar = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <svg
-              className="block h-4 w-4 fill-current"
+              className="block h-5 w-5 fill-current"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -50,7 +50,7 @@ const NavBar = () => {
           <li>
             <a
               className={getNavItemClass("Events")}
-              href="#"
+              href="#events"
               onClick={() => handleItemClick("Events")}
             >
               Events
@@ -59,7 +59,7 @@ const NavBar = () => {
           <li>
             <a
               className={getNavItemClass("Services")}
-              href="#"
+              href="#services"
               onClick={() => handleItemClick("Services")}
             >
               Services
@@ -68,7 +68,7 @@ const NavBar = () => {
           <li>
             <a
               className={getNavItemClass("About Us")}
-              href="#"
+              href="#about"
               onClick={() => handleItemClick("About Us")}
             >
               About Us
@@ -77,7 +77,7 @@ const NavBar = () => {
           <li>
             <a
               className={getNavItemClass("Contact")}
-              href="#"
+              href="#contact"
               onClick={() => handleItemClick("Contact")}
             >
               Contact
@@ -138,7 +138,7 @@ const NavBar = () => {
                 <li>
                   <a
                     className={getNavItemClass("Events")}
-                    href="#"
+                    href="#event"
                     onClick={() => handleItemClick("Events")}
                   >
                     Events
@@ -147,7 +147,7 @@ const NavBar = () => {
                 <li>
                   <a
                     className={getNavItemClass("Services")}
-                    href="#"
+                    href="#event"
                     onClick={() => handleItemClick("Services")}
                   >
                     Services
@@ -156,7 +156,7 @@ const NavBar = () => {
                 <li>
                   <a
                     className={getNavItemClass("About Us")}
-                    href="#"
+                    href="#about"
                     onClick={() => handleItemClick("About Us")}
                   >
                     About Us
@@ -165,7 +165,7 @@ const NavBar = () => {
                 <li>
                   <a
                     className={getNavItemClass("Contact")}
-                    href="#"
+                    href="#contact"
                     onClick={() => handleItemClick("Contact")}
                   >
                     Contact

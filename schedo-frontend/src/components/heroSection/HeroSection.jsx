@@ -17,11 +17,11 @@ const HeroSection = () => {
 
   return (
     <div style={styles.heroContainer}>
-      <div style={styles.heroText} className="absolute bg-transparent max-w-[60%] md:max-w-[40%] md:relative">
-        <h1 className="text-blue-black text-[45px] text-center font-bold leading-tight md:text-[70px] md:text-left">
+      <div style={styles.heroText} className="absolute mb-[195px] bg-transparent max-w-[60%] md:mb-0 md:max-w-[40%] md:relative">
+        <h1 className="text-blue-black mb-5 text-[45px] text-left font-bold leading-tight md:mb-0 md:text-[70px]">
           Easy scheduling ahead
         </h1>
-        <p className="text-blue-black text-center text-[20px] md:text-left">
+        <p className="text-blue-black mb-8 text-left text-[20px] md:mb-0">
           Join other users to easily schedule and book events, meetings, and more!
         </p>
         <button
@@ -77,7 +77,7 @@ const styles = {
   },
   ctaButtonSmall: {
     // Center the button on small screens
-    display: "block",
+    // display: "block",
     margin: "20px auto 0 auto",
   },
   lottieAnimation: {
