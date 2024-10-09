@@ -21,7 +21,7 @@ const HeroSection = () => {
         <h1 className="text-blue-black mb-5 text-[45px] text-left font-bold leading-tight md:mb-0 md:text-[70px]">
           Easy scheduling ahead
         </h1>
-        <p className="text-blue-black mb-8 text-left text-[20px] md:mb-0">
+        <p className="text-blue-black mb-8 text-left text-[20px] md:mb-4">
           Join other users to easily schedule and book events, meetings, and more!
         </p>
         <button
