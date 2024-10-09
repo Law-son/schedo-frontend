@@ -2,7 +2,7 @@ import React from "react";
 
 const AboutSection = () => {
   return (
-      <section id="about" className="overflow-hidden pt-20 pb-12 lg:pt-[120px] lg:pb-[90px] dark:bg-dark">
+      <section id="about" className="overflow-hidden pt-20 pb-12 px-10 lg:pt-[120px] lg:pb-[90px] dark:bg-dark">
         <div className="container mx-auto">
           <div className="flex flex-wrap items-center justify-between -mx-4">
             <div className="w-full">

@@ -5,6 +5,7 @@ import EventsSection from '../../components/events/EventsSection';
 import ServicesSection from '../../components/services/ServicesSection';
 import AboutSection from '../../components/about/AboutSection';
 import ContactSection from '../../components/contact/ContactSection';
+import Footer from '../../components/footer/Footer';
 
 const Home = () => {
   return <>
@@ -14,6 +15,7 @@ const Home = () => {
     <ServicesSection />
     <AboutSection />
     <ContactSection />
+    <Footer />
   </>;
 }
 

@@ -3,24 +3,22 @@ import React from "react";
 const ContactSection = () => {
   return (
     <>
-      <section className="relative z-10 overflow-hidden bg-white py-20 dark:bg-dark lg:py-[120px]">
+      <section className="relative flex justify-center z-10 overflow-hidden bg-white px-10 py-20 dark:bg-dark lg:py-[120px]">
         <div className="container">
-          <div className="-mx-4 flex flex-wrap lg:justify-between">
-            <div className="w-full px-4 lg:w-1/2 xl:w-6/12">
+          <div className="-mx-4 flex flex-wrap justify-center">
+            <div className="w-full px-4 lg:w-1/2">
               <div className="mb-12 max-w-[570px] lg:mb-0">
-                <span className="mb-4 block text-base font-semibold text-primary">
+                <span className="mb-4 block text-base font-semibold text-primary-blue">
                   Contact Us
                 </span>
-                <h2 className="mb-6 text-[32px] font-bold uppercase text-dark dark:text-white sm:text-[40px] lg:text-[36px] xl:text-[40px]">
+                <h2 className="mb-6 text-[32px] font-bold uppercase text-blue-black dark:text-white sm:text-[40px] lg:text-[36px] xl:text-[40px]">
                   GET IN TOUCH WITH US
                 </h2>
-                <p className="mb-9 text-base leading-relaxed text-body-color dark:text-dark-6">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eius tempor incididunt ut labore e dolore magna aliqua. Ut
-                  enim adiqua minim veniam quis nostrud exercitation ullamco
+                <p className="mb-9 text-base leading-relaxed text-body-color dark:text-gray-400">
+                  We offer a variety of services. Feel free to contact us.
                 </p>
                 <div className="mb-8 flex w-full max-w-[370px]">
-                  <div className="mr-6 flex h-[60px] w-full max-w-[60px] items-center justify-center overflow-hidden rounded bg-primary/5 text-primary sm:h-[70px] sm:max-w-[70px]">
+                  <div className="mr-6 bg-light-blue flex h-[60px] w-full max-w-[60px] items-center justify-center overflow-hidden rounded bg-primary/5 text-primary-blue sm:h-[70px] sm:max-w-[70px]">
                     <svg
                       width="32"
                       height="32"
@@ -39,13 +37,13 @@ const ContactSection = () => {
                       Our Location
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                      99 S.t Jomblo Park Pekanbaru 28292. Indonesia
+                      Sekondi-Takoradi, Western Region, Ghana
                     </p>
                   </div>
                 </div>
 
                 <div className="mb-8 flex w-full max-w-[370px]">
-                  <div className="mr-6 flex h-[60px] w-full max-w-[60px] items-center justify-center overflow-hidden rounded bg-primary/5 text-primary sm:h-[70px] sm:max-w-[70px]">
+                <div className="mr-6 bg-light-blue flex h-[60px] w-full max-w-[60px] items-center justify-center overflow-hidden rounded bg-primary/5 text-primary-blue sm:h-[70px] sm:max-w-[70px]">
                     <svg
                       width="32"
                       height="32"
@@ -79,13 +77,13 @@ const ContactSection = () => {
                       Phone Number
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                      (+62)81 414 257 9980
+                      (+233)272 001 700
                     </p>
                   </div>
                 </div>
 
                 <div className="mb-8 flex w-full max-w-[370px]">
-                  <div className="mr-6 flex h-[60px] w-full max-w-[60px] items-center justify-center overflow-hidden rounded bg-primary/5 text-primary sm:h-[70px] sm:max-w-[70px]">
+                <div className="mr-6 bg-light-blue flex h-[60px] w-full max-w-[60px] items-center justify-center overflow-hidden rounded bg-primary/5 text-primary-blue sm:h-[70px] sm:max-w-[70px]">
                     <svg
                       width="32"
                       height="32"
@@ -104,7 +102,7 @@ const ContactSection = () => {
                       Email Address
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                      info@yourdomain.com
+                      buabassahlawson@gmail.com
                     </p>
                   </div>
                 </div>
