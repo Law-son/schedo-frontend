@@ -10,12 +10,12 @@ const NavBar = () => {
 
   const getNavItemClass = (item) => {
     return activeItem === item
-      ? "text-sm text-primary-blue font-bold" // Active item
-      : "text-sm text-gray-400 hover:text-gray-500"; // Inactive item
+      ? "text-lg text-primary-blue font-bold md:text-3xl lg:text-sm" // Active item
+      : "text-lg text-gray-400 hover:text-gray-500 md:text-3xl lg:text-sm"; // Inactive item
   };
 
   return (
-    <div className="bg-primary-blue">
+    <div className="bg-primary-blue z-10">
       <nav className="relative px-4 py-4 flex justify-between items-center bg-white">
         <a className="text-3xl font-bold leading-none" href="#">
           <span className="self-center whitespace-nowrap text-2xl font-semibold text-primary-blue md:text-4xl lg:text-3xl">
@@ -49,11 +49,11 @@ const NavBar = () => {
           </li>
           <li>
             <a
-              className={getNavItemClass("About Us")}
+              className={getNavItemClass("Events")}
               href="#"
-              onClick={() => handleItemClick("About Us")}
+              onClick={() => handleItemClick("Events")}
             >
-              About Us
+              Events
             </a>
           </li>
           <li>
@@ -67,11 +67,11 @@ const NavBar = () => {
           </li>
           <li>
             <a
-              className={getNavItemClass("Pricing")}
+              className={getNavItemClass("About Us")}
               href="#"
-              onClick={() => handleItemClick("Pricing")}
+              onClick={() => handleItemClick("About Us")}
             >
-              Pricing
+              About Us
             </a>
           </li>
           <li>
@@ -104,7 +104,7 @@ const NavBar = () => {
           <div className="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"></div>
           <nav className="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
             <div className="flex items-center mb-8">
-              <a className="mr-auto text-3xl font-bold leading-none" href="#">
+              <a className="mr-auto text-3xl font-bold leading-none self-center whitespace-nowrap text-primary-blue md:text-4xl lg:text-3xl" href="#">
                 Schedo
               </a>
               <button className="navbar-close" onClick={() => setIsMenuOpen(false)}>
@@ -137,11 +137,11 @@ const NavBar = () => {
                 </li>
                 <li>
                   <a
-                    className={getNavItemClass("About Us")}
+                    className={getNavItemClass("Events")}
                     href="#"
-                    onClick={() => handleItemClick("About Us")}
+                    onClick={() => handleItemClick("Events")}
                   >
-                    About Us
+                    Events
                   </a>
                 </li>
                 <li>
@@ -155,11 +155,11 @@ const NavBar = () => {
                 </li>
                 <li>
                   <a
-                    className={getNavItemClass("Pricing")}
+                    className={getNavItemClass("About Us")}
                     href="#"
-                    onClick={() => handleItemClick("Pricing")}
+                    onClick={() => handleItemClick("About Us")}
                   >
-                    Pricing
+                    About Us
                   </a>
                 </li>
                 <li>
