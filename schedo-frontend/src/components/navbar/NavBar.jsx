@@ -1,74 +1,197 @@
-import React, { useState } from 'react';
-import { Navbar, NavbarBrand, NavbarToggle, NavbarCollapse, NavbarLink } from 'flowbite-react';
+import React, { useState } from "react";
 
 const NavBar = () => {
-  const [activeLink, setActiveLink] = useState("Home");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState("Home"); // Track active item
 
-  const handleLinkClick = (link) => {
-    setActiveLink(link);
-    setIsOpen(false);
+  const handleItemClick = (item) => {
+    setActiveItem(item); // Update the active item
   };
 
-  const handleToggleClick = () => {
-    setIsOpen(!isOpen);
+  const getNavItemClass = (item) => {
+    return activeItem === item
+      ? "text-sm text-primary-blue font-bold" // Active item
+      : "text-sm text-gray-400 hover:text-gray-500"; // Inactive item
   };
 
   return (
-    <Navbar fluid={true} rounded={false} className="bg-white px-4">
-      <NavbarBrand href="#">
-        <span className="self-center whitespace-nowrap text-2xl font-semibold text-primary-blue md:text-4xl">
-          Schedo
-        </span>
-      </NavbarBrand>
-      <NavbarToggle onClick={handleToggleClick} />
-      <NavbarCollapse className={`md:flex md:items-center ${isOpen ? "block" : "hidden"}`}>
-        <div className="flex flex-col md:flex-row md:space-x-4 md:items-center">
-          <NavbarLink
-            href="#"
-            active={activeLink === "Home"}
-            className={`${activeLink === "Home" ? "text-blue-500 font-bold" : "text-gray-700"}`}
-            onClick={() => handleLinkClick("Home")}
+    <div className="bg-primary-blue">
+      <nav className="relative px-4 py-4 flex justify-between items-center bg-white">
+        <a className="text-3xl font-bold leading-none" href="#">
+          <span className="self-center whitespace-nowrap text-2xl font-semibold text-primary-blue md:text-4xl lg:text-3xl">
+            Schedo
+          </span>
+        </a>
+        <div className="lg:hidden">
+          <button
+            className="navbar-burger flex items-center text-primary-blue p-3"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            Home
-          </NavbarLink>
-          <NavbarLink
-            href="#"
-            active={activeLink === "Events"}
-            className={`${activeLink === "Events" ? "text-blue-500 font-bold" : "text-gray-700"}`}
-            onClick={() => handleLinkClick("Events")}
-          >
-            Events
-          </NavbarLink>
-          <NavbarLink
-            href="#"
-            active={activeLink === "About"}
-            className={`${activeLink === "About" ? "text-blue-500 font-bold" : "text-gray-700"}`}
-            onClick={() => handleLinkClick("About")}
-          >
-            About
-          </NavbarLink>
-          <NavbarLink
-            href="#"
-            active={activeLink === "Services"}
-            className={`${activeLink === "Services" ? "text-blue-500 font-bold" : "text-gray-700"}`}
-            onClick={() => handleLinkClick("Services")}
-          >
-            Services
-          </NavbarLink>
-          <NavbarLink
-            href="#"
-            active={activeLink === "Contact"}
-            className={`${activeLink === "Contact" ? "text-blue-500 font-bold" : "text-gray-700"}`}
-            onClick={() => handleLinkClick("Contact")}
-          >
-            Contact
-          </NavbarLink>
+            <svg
+              className="block h-4 w-4 fill-current"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <title>Mobile menu</title>
+              <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
+            </svg>
+          </button>
         </div>
-      </NavbarCollapse>
-    </Navbar>
+        <ul className="hidden lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6">
+          <li>
+            <a
+              className={getNavItemClass("Home")}
+              href="#"
+              onClick={() => handleItemClick("Home")}
+            >
+              Home
+            </a>
+          </li>
+          <li>
+            <a
+              className={getNavItemClass("About Us")}
+              href="#"
+              onClick={() => handleItemClick("About Us")}
+            >
+              About Us
+            </a>
+          </li>
+          <li>
+            <a
+              className={getNavItemClass("Services")}
+              href="#"
+              onClick={() => handleItemClick("Services")}
+            >
+              Services
+            </a>
+          </li>
+          <li>
+            <a
+              className={getNavItemClass("Pricing")}
+              href="#"
+              onClick={() => handleItemClick("Pricing")}
+            >
+              Pricing
+            </a>
+          </li>
+          <li>
+            <a
+              className={getNavItemClass("Contact")}
+              href="#"
+              onClick={() => handleItemClick("Contact")}
+            >
+              Contact
+            </a>
+          </li>
+        </ul>
+        <a
+          className="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold rounded-md transition duration-200"
+          href="#"
+        >
+          Sign In
+        </a>
+        <a
+          className="hidden lg:inline-block py-2 px-6 bg-primary-blue hover:bg-blue-600 text-sm text-white font-bold rounded-md transition duration-200"
+          href="#"
+        >
+          Sign Up
+        </a>
+      </nav>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="navbar-menu relative z-50">
+          <div className="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"></div>
+          <nav className="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
+            <div className="flex items-center mb-8">
+              <a className="mr-auto text-3xl font-bold leading-none" href="#">
+                Schedo
+              </a>
+              <button className="navbar-close" onClick={() => setIsMenuOpen(false)}>
+                <svg
+                  className="h-6 w-6 text-gray-400 cursor-pointer hover:text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div>
+              <ul>
+                <li>
+                  <a
+                    className={getNavItemClass("Home")}
+                    href="#"
+                    onClick={() => handleItemClick("Home")}
+                  >
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className={getNavItemClass("About Us")}
+                    href="#"
+                    onClick={() => handleItemClick("About Us")}
+                  >
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className={getNavItemClass("Services")}
+                    href="#"
+                    onClick={() => handleItemClick("Services")}
+                  >
+                    Services
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className={getNavItemClass("Pricing")}
+                    href="#"
+                    onClick={() => handleItemClick("Pricing")}
+                  >
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className={getNavItemClass("Contact")}
+                    href="#"
+                    onClick={() => handleItemClick("Contact")}
+                  >
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div className="mt-auto">
+              <a
+                className="block py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold rounded-xl transition duration-200"
+                href="#"
+              >
+                Sign In
+              </a>
+              <a
+                className="block py-2 px-6 bg-primary-blue hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200"
+                href="#"
+              >
+                Sign Up
+              </a>
+            </div>
+          </nav>
+        </div>
+      )}
+    </div>
   );
 };
 
 export default NavBar;
-
