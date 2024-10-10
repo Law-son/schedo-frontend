@@ -1,12 +1,13 @@
 import React from "react";
+import FadeInAnimation from "../FadeInAnimation/FadeInAnimation";
 
 const ContactSection = () => {
   return (
-    <>
-      <section className="relative flex justify-center z-10 overflow-hidden bg-white px-10 py-20 dark:bg-dark lg:py-[120px]">
+    <FadeInAnimation>
+      <section id="contact" section className="relative flex justify-center z-10 overflow-hidden bg-white px-10 py-20 dark:bg-dark lg:py-[120px]">
         <div className="container">
           <div className="-mx-4 flex flex-wrap justify-center">
-            <div className="w-full px-4 lg:w-1/2">
+            <div className="w-full flex justify-center px-4 lg:w-1/2">
               <div className="mb-12 max-w-[570px] lg:mb-0">
                 <span className="mb-4 block text-base font-semibold text-primary-blue">
                   Contact Us
@@ -111,7 +112,7 @@ const ContactSection = () => {
           </div>
         </div>
       </section>
-    </>
+    </FadeInAnimation>
   );
 };
 
