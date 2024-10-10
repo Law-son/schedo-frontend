@@ -1,4 +1,5 @@
-import './App.css'
+// src/App.jsx
+import "./App.css";
 import {
   createBrowserRouter,
   Route,
@@ -13,16 +14,15 @@ import Home from "./pages/home/Home";
 import SignUp from "./pages/authentication/SignUp";
 import SignIn from "./pages/authentication/SignIn";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Error404 from "./pages/Error404"
-import EventSummary from './pages/eventSummary/EventSummary';
+import Error404 from "./pages/Error404";
+import EventSummary from "./pages/eventSummary/EventSummary";
 
 // Layout
 import RouteLayout from "./layouts/RouteLayout";
 
 // Components
-import 'flowbite/dist/flowbite.min.css';
-
-
+import "flowbite/dist/flowbite.min.css";
+import { EventProvider } from "./context/EventContext";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -31,15 +31,25 @@ const routes = createBrowserRouter(
       <Route path="signup" element={<SignUp />} />
       <Route path="signin" element={<SignIn />} />
       <Route path="event-summary/:id" element={<EventSummary />} />
-      <Route path="dashboard" element={<RequireAuth loginPath="/login"> <Dashboard /> </RequireAuth>} />
-
+      <Route
+        path="dashboard"
+        element={
+          <RequireAuth loginPath="/login">
+            <Dashboard />
+          </RequireAuth>
+        }
+      />
       <Route path="*" element={<Error404 />} />
     </Route>
   )
 );
 
 function App() {
-  return <RouterProvider router={routes} />;
-} 
+  return (
+    <EventProvider> {/* Place EventProvider at the top */}
+      <RouterProvider router={routes} />
+    </EventProvider>
+  );
+}
 
 export default App;
