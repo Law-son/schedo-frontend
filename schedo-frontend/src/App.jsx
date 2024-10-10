@@ -14,6 +14,7 @@ import SignUp from "./pages/authentication/SignUp";
 import SignIn from "./pages/authentication/SignIn";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Error404 from "./pages/Error404"
+import EventSummary from './pages/eventSummary/EventSummary';
 
 // Layout
 import RouteLayout from "./layouts/RouteLayout";
@@ -22,12 +23,14 @@ import RouteLayout from "./layouts/RouteLayout";
 import 'flowbite/dist/flowbite.min.css';
 
 
+
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RouteLayout />}>
       <Route index element={<Home />} />
       <Route path="signup" element={<SignUp />} />
-      <Route path="login" element={<SignIn />} />
+      <Route path="signin" element={<SignIn />} />
+      <Route path="event-summary/:id" element={<EventSummary />} />
       <Route path="dashboard" element={<RequireAuth loginPath="/login"> <Dashboard /> </RequireAuth>} />
 
       <Route path="*" element={<Error404 />} />

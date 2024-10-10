@@ -7,6 +7,7 @@ import ReactPaginate from "react-paginate";
 import eventsData from "./eventsData";
 import FadeInAnimation from "../FadeInAnimation/FadeInAnimation";
 
+
 const EventsSection = () => {
   const [searchTerm, setSearchTerm] = useState(""); // State to hold search input
   const [currentPage, setCurrentPage] = useState(0);
@@ -35,7 +36,7 @@ const EventsSection = () => {
 
   return (
     <div>
-      <section className="w-full flex justify-center py-12 md:py-24 lg:py-32 xl:py-48 bg-blue-black">
+      <section className="w-full flex justify-center py-12 md:py-24 lg:py-32 bg-blue-black">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-4 text-center">
             <div className="space-y-2">
@@ -80,10 +81,17 @@ const EventsSection = () => {
                 currentEvents.map((event, index) => (
                   <EventCard
                     key={index}
+                    id={event.id}
                     title={event.title}
-                    date={event.date}
+                    description={event.description}
+                    start_date={event.start_date}
+                    end_date={event.end_date}
+                    start_time={event.start_time}
+                    end_time={event.end_time}
                     location={event.location}
-                    image={event.image}
+                    category={event.category}
+                    is_online={event.is_online}
+                    thumbnail={event.thumbnail}
                   />
                 ))
               ) : (
@@ -130,3 +138,4 @@ const EventsSection = () => {
 };
 
 export default EventsSection;
+

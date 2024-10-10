@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768); // Change 768px to your breakpoint
@@ -24,14 +25,16 @@ const HeroSection = () => {
         <p className="text-blue-black mb-8 text-left text-[20px] md:mb-4">
           Join other users to easily schedule and book events, meetings, and more!
         </p>
-        <button
-          style={{
-            ...styles.ctaButton,
-            ...(isSmallScreen ? styles.ctaButtonSmall : {})
-          }}
-        >
-          Get Started
-        </button>
+        <Link to="/signup">
+          <button
+            style={{
+              ...styles.ctaButton,
+              ...(isSmallScreen ? styles.ctaButtonSmall : {})
+            }}
+          >
+            Get Started
+          </button>
+        </Link>
       </div>
 
       {/* Lottie Animation */}

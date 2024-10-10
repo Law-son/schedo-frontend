@@ -1,18 +1,41 @@
 import { Calendar, MapPin, Star } from "lucide-react"
 import { formatDate } from "../../utils/dateFormatter"
 import Button from '../nativeComponents/Button';
+import { useNavigate } from "react-router-dom";
 
 import React from 'react'
 
-const EventCard = ({ title, date, location, image }) => {
-  let formattedDate = formatDate(date);
+const EventCard = ({ id, title, description, start_date, end_date, start_time, end_time, location, category, is_online, thumbnail }) => {
+  let formattedDate = formatDate(start_date);
+
+  const navigate = useNavigate();
+
+  // Handle event click, navigate to EventSummary page with the event data
+  const handleEventClick = () => {
+    navigate(`/event-summary/${id}`, {
+      state: {
+        id,
+        title,
+        description,
+        start_date,
+        end_date,
+        start_time,
+        end_time,
+        location,
+        category,
+        is_online,
+        thumbnail
+      },
+    });
+  };
+
     return (
-      <div className="rounded-lg overflow-hidden shadow-lg hover:scale-105 transition duration-500">
+      <div className="rounded-lg overflow-hidden shadow-lg hover:scale-105 transition duration-500" onClick={handleEventClick}>
         <img
           alt="Event image"
           className="aspect-video object-cover w-full"
           height="225"
-          src={image}
+          src={thumbnail}
           width="400"
         />
         <div className="p-4 text-left">
@@ -41,3 +64,4 @@ const EventCard = ({ title, date, location, image }) => {
 }
 
 export default EventCard
+

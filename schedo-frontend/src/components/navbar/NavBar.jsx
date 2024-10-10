@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -84,18 +85,22 @@ const NavBar = () => {
             </a>
           </li>
         </ul>
-        <a
-          className="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold rounded-md transition duration-200"
-          href="#"
-        >
-          Sign In
-        </a>
-        <a
-          className="hidden lg:inline-block py-2 px-6 bg-primary-blue hover:bg-blue-600 text-sm text-white font-bold rounded-md transition duration-200"
-          href="#"
-        >
-          Sign Up
-        </a>
+        <Link to="/signin">
+          <a
+            className="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold rounded-md transition duration-200"
+            href="#"
+          >
+            Sign In
+          </a>
+        </Link>
+        <Link to="/signup">
+          <a
+            className="hidden lg:inline-block py-2 px-6 bg-primary-blue hover:bg-blue-600 text-sm text-white font-bold rounded-md transition duration-200"
+            href="#"
+          >
+            Sign Up
+          </a>
+        </Link>
       </nav>
 
       {/* Mobile Menu */}
@@ -104,10 +109,16 @@ const NavBar = () => {
           <div className="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"></div>
           <nav className="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
             <div className="flex items-center mb-8">
-              <a className="mr-auto text-3xl font-bold leading-none self-center whitespace-nowrap text-primary-blue md:text-4xl lg:text-3xl" href="#">
+              <a
+                className="mr-auto text-3xl font-bold leading-none self-center whitespace-nowrap text-primary-blue md:text-4xl lg:text-3xl"
+                href="#"
+              >
                 Schedo
               </a>
-              <button className="navbar-close" onClick={() => setIsMenuOpen(false)}>
+              <button
+                className="navbar-close"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <svg
                   className="h-6 w-6 text-gray-400 cursor-pointer hover:text-gray-500"
                   xmlns="http://www.w3.org/2000/svg"
