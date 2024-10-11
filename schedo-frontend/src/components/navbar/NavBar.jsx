@@ -17,13 +17,13 @@ const NavBar = () => {
 
   return (
     <div className="bg-primary-blue z-10">
-      <nav className="relative px-4 py-4 flex justify-between items-center bg-white">
+      <nav className="relative px-4 py-4 flex justify-between items-center w-full bg-white">
         <a className="text-3xl font-bold leading-none" href="#">
           <span className="self-center whitespace-nowrap text-2xl font-semibold text-primary-blue md:text-4xl lg:text-3xl">
             Schedo
           </span>
         </a>
-        <div className="lg:hidden">
+        <div className="lg:hidden ml-auto">
           <button
             className="navbar-burger flex items-center text-primary-blue p-3"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -149,7 +149,7 @@ const NavBar = () => {
                 <li>
                   <a
                     className={getNavItemClass("Events")}
-                    href="#event"
+                    href="#events"
                     onClick={() => handleItemClick("Events")}
                   >
                     Events
@@ -158,7 +158,7 @@ const NavBar = () => {
                 <li>
                   <a
                     className={getNavItemClass("Services")}
-                    href="#event"
+                    href="#services"
                     onClick={() => handleItemClick("Services")}
                   >
                     Services
