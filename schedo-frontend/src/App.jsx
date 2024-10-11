@@ -23,6 +23,7 @@ import RouteLayout from "./layouts/RouteLayout";
 // Components
 import "flowbite/dist/flowbite.min.css";
 import { EventProvider } from "./context/EventContext";
+import RegisterForEvent from "./pages/registration/RegisterForEvent";
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -31,6 +32,7 @@ const routes = createBrowserRouter(
       <Route path="signup" element={<SignUp />} />
       <Route path="signin" element={<SignIn />} />
       <Route path="event-summary/:id" element={<EventSummary />} />
+      <Route path="register/" element={<RegisterForEvent />} />
       <Route
         path="dashboard"
         element={

@@ -4,7 +4,7 @@ import Button from '../../components/nativeComponents/Button';
 import { useEvent } from '../../context/EventContext'; 
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils/dateFormatter';
- 
+
 const EventSummary = () => {
   const { selectedEvent } = useEvent(); // Access the selected event from context
   const navigate = useNavigate();
@@ -21,8 +21,27 @@ const EventSummary = () => {
     return null;
   }
 
-  const { title, description, start_date, end_date, start_time, end_time, location, thumbnail, category } = selectedEvent;
+  const { id, title, description, start_date, end_date, start_time, end_time, location, thumbnail, category } = selectedEvent;
   const formattedDate = formatDate(start_date);
+
+  // Handler for booking
+  const handleBookNow = () => {
+    // Construct the URL and pass the event details as state
+    navigate('/register', {
+      state: {
+        id,
+        title,
+        description,
+        start_date,
+        end_date,
+        start_time,
+        end_time,
+        thumbnail,
+        location,
+        category,
+      }
+    });
+  };
 
   return (
     <section className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80%] mx-auto rounded-2xl border-gray-400 border-2 overflow-hidden bg-white">
@@ -63,7 +82,7 @@ const EventSummary = () => {
           <h3 className="font-bold text-blue-black text-lg mb-2 lg:ml-6">More Details</h3>
           <p className="text-sm text-gray-600 lg:ml-6">{description}</p>
           <div className="flex w-full justify-end right-0 lg:absolute lg:bottom-0 lg:mt-0">
-            <Button className="mt-[30px]">Book Now</Button>
+            <Button className="mt-[30px]" onClick={handleBookNow}>Book Now</Button>
           </div>
         </div>
       </div>
