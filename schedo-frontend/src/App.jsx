@@ -7,25 +7,24 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import { RequireAuth } from "react-auth-kit";
-console.log('RequireAuth:', RequireAuth);
-
-// pages
+// Pages
 import Home from "./pages/home/Home";
 import SignUp from "./pages/authentication/SignUp";
 import SignIn from "./pages/authentication/SignIn";
 import Error404 from "./pages/Error404";
 import EventSummary from "./pages/eventSummary/EventSummary";
-import DashboardLayoutBranding from "./pages/dashboard/DashboardLayoutBranding"; // Import Dashboard layout
+import DashboardLayoutBranding from "./pages/dashboard/DashboardLayoutBranding";
 
 // Layout
 import RouteLayout from "./layouts/RouteLayout";
 
 // Components
-import "flowbite/dist/flowbite.min.css";
 import { EventProvider } from "./context/EventContext";
 import RegisterForEvent from "./pages/registration/RegisterForEvent";
+import RequireAuth from "./components/auth/RequireAuth";
+import { AuthProvider } from "./context/AuthContext";
 
+// Create routes
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RouteLayout />}>
@@ -35,22 +34,18 @@ const routes = createBrowserRouter(
       <Route path="event-summary/:id" element={<EventSummary />} />
       <Route path="register/" element={<RegisterForEvent />} />
 
-      {/* Protect Dashboard routes */}
+      {/* Protect dashboard routes */}
       <Route
         path="dashboard/*"
-        // element={<DashboardLayoutBranding />}
         element={
-          <RequireAuth loginPath="/signin">
-            {" "}
-            {/* Use SignIn page as login */}
-            <DashboardLayoutBranding /> {/* Use the dashboard layout here */}
-          </RequireAuth>
+            <DashboardLayoutBranding />
+          // <RequireAuth>
+          //   <DashboardLayoutBranding />
+          // </RequireAuth>
         }
       >
-        {/* Nested routes for dashboard sections */}
         <Route path="orders" element={<h1>Orders Page</h1>} />
         <Route path="analytics" element={<h1>Analytics Page</h1>} />
-        {/* You can add more dashboard-related pages here */}
       </Route>
 
       <Route path="*" element={<Error404 />} />
@@ -60,11 +55,11 @@ const routes = createBrowserRouter(
 
 function App() {
   return (
-    <EventProvider>
-      {" "}
-      {/* Place EventProvider at the top */}
-      <RouterProvider router={routes} />
-    </EventProvider>
+    <AuthProvider> {/* AuthProvider below RouterProvider */}
+      <EventProvider>
+        <RouterProvider router={routes} />
+      </EventProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,6 +1,20 @@
 import React from "react";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../../context/AuthContext";
 
 const SignIn = () => {
+  const { login, loading } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await login(email, password);
+    navigate("/dashboard");  // Navigate after successful login
+  };
+
   return (
     <section className="bg-white py-20 lg:py-[120px]">
       <div className="container mx-auto">
