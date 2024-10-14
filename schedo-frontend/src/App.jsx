@@ -1,10 +1,10 @@
-// src/App.jsx
 import "./App.css";
 import {
   createBrowserRouter,
   Route,
   createRoutesFromElements,
   RouterProvider,
+  Navigate, // Import Navigate for redirect
 } from "react-router-dom";
 
 // Pages
@@ -22,7 +22,10 @@ import RouteLayout from "./layouts/RouteLayout";
 import { EventProvider } from "./context/EventContext";
 import RegisterForEvent from "./pages/registration/RegisterForEvent";
 import RequireAuth from "./components/auth/RequireAuth";
-import { AuthProvider } from "./context/AuthContext";
+import Events from "./pages/dashboard/Events";
+import Archive from "./pages/dashboard/Archive";
+import Scan from "./pages/dashboard/Scan";
+import Analytics from "./pages/dashboard/Analytics";
 
 // Create routes
 const routes = createBrowserRouter(
@@ -37,15 +40,14 @@ const routes = createBrowserRouter(
       {/* Protect dashboard routes */}
       <Route
         path="dashboard/*"
-        element={
-            <DashboardLayoutBranding />
-          // <RequireAuth>
-          //   <DashboardLayoutBranding />
-          // </RequireAuth>
-        }
+        element={<DashboardLayoutBranding />}
       >
-        <Route path="orders" element={<h1>Orders Page</h1>} />
-        <Route path="analytics" element={<h1>Analytics Page</h1>} />
+        {/* Default route: Redirect from /dashboard to /dashboard/analytics */}
+        <Route index element={<Navigate to="analytics" />} />
+        <Route path="analytics" element={<Analytics />} /> {/* Changed from Analytics to a valid component */}
+        <Route path="events" element={<Events />} />
+        <Route path="scan" element={<Scan />} />
+        <Route path="archive" element={<Archive />} />
       </Route>
 
       <Route path="*" element={<Error404 />} />
@@ -55,11 +57,9 @@ const routes = createBrowserRouter(
 
 function App() {
   return (
-    <AuthProvider> {/* AuthProvider below RouterProvider */}
-      <EventProvider>
-        <RouterProvider router={routes} />
-      </EventProvider>
-    </AuthProvider>
+    <EventProvider>
+      <RouterProvider router={routes} />
+    </EventProvider>
   );
 }
 
