@@ -20,7 +20,7 @@ const NAVIGATION = [
   },
   {
     segment: "events",
-    title: "Events",
+    title: "Manage Events",
     icon: <EventIcon />,
   },
   {
