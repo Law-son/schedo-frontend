@@ -22,10 +22,11 @@ import RouteLayout from "./layouts/RouteLayout";
 import { EventProvider } from "./context/EventContext";
 import RegisterForEvent from "./pages/registration/RegisterForEvent";
 import RequireAuth from "./components/auth/RequireAuth";
-import Events from "./pages/dashboard/Events";
+import ManageEvents from "./pages/dashboard/ManageEvents";
 import Archive from "./pages/dashboard/Archive";
 import Scan from "./pages/dashboard/Scan";
 import Analytics from "./pages/dashboard/Analytics";
+import ScheduleEvent from "./pages/dashboard/ScheduleEvent";
 
 // Create routes
 const routes = createBrowserRouter(
@@ -45,9 +46,10 @@ const routes = createBrowserRouter(
         {/* Default route: Redirect from /dashboard to /dashboard/analytics */}
         <Route index element={<Navigate to="analytics" />} />
         <Route path="analytics" element={<Analytics />} /> {/* Changed from Analytics to a valid component */}
-        <Route path="events" element={<Events />} />
+        <Route path="events" element={<ManageEvents />} />
         <Route path="scan" element={<Scan />} />
         <Route path="archive" element={<Archive />} />
+        <Route path="schedule" element={<ScheduleEvent />} />
       </Route>
 
       <Route path="*" element={<Error404 />} />
