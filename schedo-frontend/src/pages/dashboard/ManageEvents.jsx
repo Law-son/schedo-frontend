@@ -4,6 +4,8 @@ import DataTable from "react-data-table-component";
 import Button from "../../components/nativeComponents/Button";
 import { Edit, Eye, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const customStyles = {
   headCells: {
@@ -16,25 +18,27 @@ const customStyles = {
 };
 
 const ManageEvents = () => {
-  const [filterText, setFilterText] = useState(""); // State for search input
+  const [filterText, setFilterText] = useState("");
+  const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 
   // Event Handlers for Edit, View, and Delete actions
   const handleEdit = (event) => {
-    console.log("Edit event:", event);
+    navigate(`/dashboard/update`, { state: event });
   };
 
   const handleView = (event) => {
-    console.log("View event:", event);
+    navigate(`/dashboard/view`, { state: event });
   };
 
   const handleDelete = (event) => {
     console.log("Delete event:", event);
+    setOpen(true);
   };
 
   const handleScheduleEvent = () => {
     navigate("/dashboard/schedule");
-  }
+  };
 
   // DataTable columns (moved inside the component)
   const columns = [
@@ -56,18 +60,18 @@ const ManageEvents = () => {
     {
       name: "Actions",
       cell: (row) => (
-        <div className="flex space-x-2">
-          <button
-            onClick={() => handleEdit(row)}
-            className="text-blue-500 hover:text-blue-700"
-          >
-            <Edit size={18} />
-          </button>
+        <div className="flex space-x-3">
           <button
             onClick={() => handleView(row)}
             className="text-green-500 hover:text-green-700"
           >
             <Eye size={18} />
+          </button>
+          <button
+            onClick={() => handleEdit(row)}
+            className="text-blue-500 hover:text-blue-700"
+          >
+            <Edit size={18} />
           </button>
           <button
             onClick={() => handleDelete(row)}
@@ -87,6 +91,14 @@ const ManageEvents = () => {
       event.title.toLowerCase().includes(filterText.toLowerCase()) ||
       event.start_date.toLowerCase().includes(filterText.toLowerCase())
   );
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   return (
     <div className="upcoming-events flex flex-col items-start my-4 bg-primary-grey rounded-xl py-4 px-4 mx-4 w-[360px] md:w-[96.5%] lg:w-full lg:mx-0">
@@ -111,6 +123,16 @@ const ManageEvents = () => {
           customStyles={customStyles} // Apply custom styles
         />
       </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Event has been moved to your archives
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

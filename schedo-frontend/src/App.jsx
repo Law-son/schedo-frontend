@@ -27,6 +27,8 @@ import Archive from "./pages/dashboard/Archive";
 import Scan from "./pages/dashboard/Scan";
 import Analytics from "./pages/dashboard/Analytics";
 import ScheduleEvent from "./pages/dashboard/ScheduleEvent";
+import UpdateEvent from "./pages/dashboard/UpdateEvent";
+import ViewEvent from "./pages/dashboard/ViewEvent";
 
 // Create routes
 const routes = createBrowserRouter(
@@ -50,6 +52,8 @@ const routes = createBrowserRouter(
         <Route path="scan" element={<Scan />} />
         <Route path="archive" element={<Archive />} />
         <Route path="schedule" element={<ScheduleEvent />} />
+        <Route path="update" element={<UpdateEvent />} />
+        <Route path="view" element={<ViewEvent />} />
       </Route>
 
       <Route path="*" element={<Error404 />} />
