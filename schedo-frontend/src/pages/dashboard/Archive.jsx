@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import eventsData from "../../components/events/eventsData";
 import DataTable from "react-data-table-component";
 import Button from "../../components/nativeComponents/Button";
-import { Restore, Trash } from "lucide-react";
+import { History, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
@@ -19,25 +19,87 @@ const customStyles = {
 
 const Archive = () => {
   const [filterText, setFilterText] = useState("");
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // success or error
   const navigate = useNavigate();
 
+  // Dummy API request function
+  const fakeApiRequest = (shouldSucceed = true) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        shouldSucceed ? resolve("Success") : reject("Error");
+      }, 1000); // Simulate a 1-second delay
+    });
+  };
+
   // Event Handlers for Edit, View, and Delete actions
-  const handleEdit = (event) => {
-    navigate(`/dashboard/update`, { state: event });
+  const handleRestore = async (event) => {
+    try {
+      // Perform restore operation (fake API request)
+      await fakeApiRequest(true); // Simulate success
+
+      // Show success snackbar
+      setSnackbarMessage("Event restored successfully");
+      setSnackbarSeverity("success");
+      setOpen(true);
+    } catch (error) {
+      // Show error snackbar
+      setSnackbarMessage("Failed to restore event");
+      setSnackbarSeverity("error");
+      setOpen(true);
+    }
   };
 
-  const handleView = (event) => {
-    navigate(`/dashboard/view`, { state: event });
+  const handleDelete = async (event) => {
+    try {
+      // Perform delete operation (fake API request)
+      await fakeApiRequest(false); // Simulate failure
+
+      // Show success snackbar
+      setSnackbarMessage("Event deleted successfully");
+      setSnackbarSeverity("success");
+      setOpen(true);
+    } catch (error) {
+      // Show error snackbar
+      setSnackbarMessage("Failed to delete event");
+      setSnackbarSeverity("error");
+      setOpen(true);
+    }
   };
 
-  const handleDelete = (event) => {
-    console.log("Delete event:", event);
-    setOpen(true);
+  const handleRestoreAll = async () => {
+    try {
+      // Perform restore all operation (fake API request)
+      await fakeApiRequest(true); // Simulate success
+
+      // Show success snackbar
+      setSnackbarMessage("All events restored successfully");
+      setSnackbarSeverity("success");
+      setOpen(true);
+    } catch (error) {
+      // Show error snackbar
+      setSnackbarMessage("Failed to restore all events");
+      setSnackbarSeverity("error");
+      setOpen(true);
+    }
   };
 
-  const handleScheduleEvent = () => {
-    navigate("/dashboard/schedule");
+  const handleDeleteAll = async () => {
+    try {
+      // Perform delete all operation (fake API request)
+      await fakeApiRequest(false); // Simulate failure
+
+      // Show success snackbar
+      setSnackbarMessage("All events deleted successfully");
+      setSnackbarSeverity("success");
+      setOpen(true);
+    } catch (error) {
+      // Show error snackbar
+      setSnackbarMessage("Failed to delete all events");
+      setSnackbarSeverity("error");
+      setOpen(true);
+    }
   };
 
   // DataTable columns (moved inside the component)
@@ -62,10 +124,10 @@ const Archive = () => {
       cell: (row) => (
         <div className="flex space-x-3">
           <button
-            onClick={() => handleEdit(row)}
+            onClick={() => handleRestore(row)}
             className="text-blue-500 hover:text-blue-700"
           >
-            <Restore size={18} />
+            <History size={18} />
           </button>
           <button
             onClick={() => handleDelete(row)}
@@ -79,7 +141,7 @@ const Archive = () => {
     },
   ];
 
-  // Filter attendees based on search input
+  // Filter events based on search input
   const filteredEvents = eventsData.filter(
     (event) =>
       event.title.toLowerCase().includes(filterText.toLowerCase()) ||
@@ -98,8 +160,13 @@ const Archive = () => {
     <div className="upcoming-events flex flex-col items-start my-4 bg-primary-grey rounded-xl py-4 px-4 mx-4 w-[360px] md:w-[96.5%] lg:w-full lg:mx-0">
       <div className="flex justify-end items-center my-4 w-full">
         <div className="flex flex-col space-y-3 space-x-3 md:flex-row md:space-y-0">
-        <Button onClick={handleScheduleEvent}>Restore all events</Button>
-        <Button onClick={handleScheduleEvent} className={'bg-red-500 hover:bg-red-700'}>Delete all events</Button>
+          <Button onClick={handleRestoreAll}>Restore all events</Button>
+          <Button
+            onClick={handleDeleteAll}
+            className={"bg-red-500 hover:bg-red-700"}
+          >
+            Delete all events
+          </Button>
         </div>
       </div>
       <div className="flex justify-between items-center w-full">
@@ -123,11 +190,11 @@ const Archive = () => {
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert
           onClose={handleClose}
-          severity="success"
+          severity={snackbarSeverity} // dynamic severity
           variant="filled"
           sx={{ width: "100%" }}
         >
-          Event has been moved to your archives
+          {snackbarMessage} {/* dynamic message */}
         </Alert>
       </Snackbar>
     </div>
