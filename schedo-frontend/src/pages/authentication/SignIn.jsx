@@ -14,15 +14,15 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(email, password);
-
-    if (!authError) {
+    const success = await login(email, password);
+  
+    if (success) {
       setOpenSnackbar(true); // Show success snackbar
       navigate("/dashboard"); // Navigate after successful login
     } else {
       setOpenSnackbar(true); // Show error snackbar
     }
-  };
+  };  
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -42,16 +42,25 @@ const SignIn = () => {
                 </a>
               </div>
               <form onSubmit={handleSubmit}>
-                <InputBox type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}  placeholder="Email" />
+              <InputBox
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                />
                 <InputBox
                   type="password"
                   name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                 />
                 <div className="mb-10">
                   <input
                     type="submit"
                     value="Sign In"
+                    disabled={loading}
                     className="w-full cursor-pointer rounded-md border border-primary bg-primary-blue px-5 py-3 text-base font-medium text-white transition hover:bg-opacity-90"
                   />
                 </div>
@@ -347,19 +356,38 @@ const SignIn = () => {
           </div>
         </div>
       </div>
+      {/* Snackbar for displaying error or success messages */}
+      <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              >
+                {authError ? (
+                  <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+                    {authError}
+                  </Alert>
+                ) : (
+                  <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+                    Login successful! Redirecting...
+                  </Alert>
+                )}
+              </Snackbar>
     </section>
   );
 };
 
 export default SignIn;
 
-const InputBox = ({ type, placeholder, name }) => {
+const InputBox = ({ type, placeholder, name, value, onChange }) => {
   return (
     <div className="mb-6">
       <input
         type={type}
         placeholder={placeholder}
         name={name}
+        value={value} // Accept value from props
+        onChange={onChange} // Accept onChange handler from props
         className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
       />
     </div>

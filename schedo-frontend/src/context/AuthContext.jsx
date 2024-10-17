@@ -15,26 +15,43 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setAuthError(null); // Reset error state before a new request
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/accounts/login/`, {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/accounts/login/`,
+        {
+          email,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data.status === "success") {
         const token = response.data.token;
         localStorage.setItem("token", token); // Store token in localStorage
         setToken(token);
         console.log("Login successful:", response.data.message);
+        return true; // Return success
+      } else if (
+        response.data.status === "error" &&
+        response.data.message === "Invalid email or password"
+      ) {
+        setAuthError(response.data.message); // Set error message for invalid credentials
+        return false; // Return failure
       } else {
-        setAuthError(response.data.message || "Login failed"); // Handle generic login error
+        setAuthError("Login failed");
+        return false; // Return failure
       }
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response && error.response.data.message) {
         setAuthError(error.response.data.message); // Set specific error message
       } else {
         setAuthError("An error occurred during login.");
       }
       console.error("Login error:", error);
+      return false; // Return failure
     } finally {
       setLoading(false);
     }
@@ -45,20 +62,34 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setAuthError(null); // Reset error state before a new request
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/accounts/signup/`, {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/accounts/signup/`,
+        {
+          email,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data.status === "success") {
         const token = response.data.token;
         localStorage.setItem("token", token); // Store token in localStorage
         setToken(token);
         console.log("Signup successful:", response.data.message);
-      } else if (response.data.status === "error" && response.data.errors?.email) {
+        return true; // Return success
+      } else if (
+        response.data.status === "error" &&
+        response.data.errors?.email
+      ) {
         setAuthError(response.data.errors.email[0]); // Extract and set specific email error
+        return false; // Return failure
       } else {
         setAuthError("Signup failed");
+        return false; // Return failure
       }
     } catch (error) {
       if (error.response && error.response.data.errors?.email) {
@@ -67,6 +98,7 @@ export const AuthProvider = ({ children }) => {
         setAuthError("An error occurred during signup.");
       }
       console.error("Signup error:", error);
+      return false; // Return failure
     } finally {
       setLoading(false);
     }
@@ -90,7 +122,9 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ login, signup, logout, isAuthenticated, loading, authError }}>
+    <AuthContext.Provider
+      value={{ login, signup, logout, isAuthenticated, loading, authError }}
+    >
       {children}
     </AuthContext.Provider>
   );

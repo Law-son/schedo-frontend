@@ -1,6 +1,32 @@
-import React from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../../context/AuthContext";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const SignUp = () => {
+  const { signup, loading, authError } = useContext(AuthContext); // Access signup, loading, and authError
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Snackbar state
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const success = await signup(email, password);
+  
+    if (success) {
+      setOpenSnackbar(true); // Show success snackbar
+      navigate("/dashboard"); // Navigate after successful signup
+    } else {
+      setOpenSnackbar(true); // Show error snackbar
+    }
+  };  
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
     <section className="bg-white py-20 lg:py-[120px]">
       <div className="container mx-auto">
@@ -14,17 +40,26 @@ const SignUp = () => {
                   </span>
                 </a>
               </div>
-              <form>
-                <InputBox type="email" name="email" placeholder="Email" />
+              <form onSubmit={handleSubmit}>
+                <InputBox
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                />
                 <InputBox
                   type="password"
                   name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                 />
                 <div className="mb-10">
                   <input
                     type="submit"
                     value="Sign Up"
+                    disabled={loading}
                     className="w-full cursor-pointer rounded-md border border-primary bg-primary-blue px-5 py-3 text-base font-medium text-white transition hover:bg-opacity-90"
                   />
                 </div>
@@ -320,19 +355,46 @@ const SignUp = () => {
           </div>
         </div>
       </div>
+      {/* Snackbar for displaying error or success messages */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        {authError ? (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {authError}
+          </Alert>
+        ) : (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Account created successfully! Redirecting...
+          </Alert>
+        )}
+      </Snackbar>
     </section>
   );
 };
 
 export default SignUp;
 
-const InputBox = ({ type, placeholder, name }) => {
+const InputBox = ({ type, placeholder, name, value, onChange }) => {
   return (
     <div className="mb-6">
       <input
         type={type}
         placeholder={placeholder}
         name={name}
+        value={value} // Accept value from props
+        onChange={onChange} // Accept onChange handler from props
         className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
       />
     </div>
