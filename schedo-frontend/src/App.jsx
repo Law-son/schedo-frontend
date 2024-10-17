@@ -20,6 +20,7 @@ import RouteLayout from "./layouts/RouteLayout";
 
 // Components
 import { EventProvider } from "./context/EventContext";
+import { AuthProvider } from "./context/AuthContext"; // Import AuthProvider
 import RegisterForEvent from "./pages/registration/RegisterForEvent";
 import RequireAuth from "./components/auth/RequireAuth";
 import ManageEvents from "./pages/dashboard/ManageEvents";
@@ -43,11 +44,15 @@ const routes = createBrowserRouter(
       {/* Protect dashboard routes */}
       <Route
         path="dashboard/*"
-        element={<DashboardLayoutBranding />}
+        element={
+          <RequireAuth redirectTo="/signin">
+            <DashboardLayoutBranding />
+          </RequireAuth>
+        }
       >
         {/* Default route: Redirect from /dashboard to /dashboard/analytics */}
         <Route index element={<Navigate to="analytics" />} />
-        <Route path="analytics" element={<Analytics />} /> {/* Changed from Analytics to a valid component */}
+        <Route path="analytics" element={<Analytics />} />
         <Route path="events" element={<ManageEvents />} />
         <Route path="scan" element={<Scan />} />
         <Route path="archive" element={<Archive />} />
@@ -63,9 +68,11 @@ const routes = createBrowserRouter(
 
 function App() {
   return (
-    <EventProvider>
-      <RouterProvider router={routes} />
-    </EventProvider>
+    <AuthProvider> {/* Wrap your app in AuthProvider */}
+      <EventProvider>
+        <RouterProvider router={routes} />
+      </EventProvider>
+    </AuthProvider>
   );
 }
 
