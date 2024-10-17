@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import EventCard from "../eventCard/EventCard";
 import Input from "../nativeComponents/Input";
 import Button from "../nativeComponents/Button";
@@ -6,12 +7,57 @@ import { Search } from "lucide-react";
 import ReactPaginate from "react-paginate";
 import eventsData from "./eventsData";
 import FadeInAnimation from "../FadeInAnimation/FadeInAnimation";
+import ClipLoader from "react-spinners/ClipLoader";
 
 
 const EventsSection = () => {
   const [searchTerm, setSearchTerm] = useState(""); // State to hold search input
   const [currentPage, setCurrentPage] = useState(0);
+  const [eventsData, setEventsData] = useState([]); // State to hold fetched events
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
   const eventsPerPage = 6;
+
+  // Fetch events from the server
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setLoading(true); // Set loading to true before making the request
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/events/public/`
+        );
+        
+        // Check if the response has the 'events' field with data
+        if (response.data && response.data.events && response.data.events.length > 0) {
+          setEventsData(response.data.events); // Access 'events' array
+          console.log("Response:", response.data.events);
+        } else {
+          setError("No events available");
+        }
+      } catch (err) {
+        console.error("Error fetching events:", err); // Log the error object
+        if (err.response) {
+          // Server responded with a status other than 200 range
+          console.error("Response data:", err.response.data);
+          console.error("Response status:", err.response.status);
+          console.error("Response headers:", err.response.headers);
+          setError(`Error: ${err.response.status} - ${err.response.data}`);
+        } else if (err.request) {
+          // Request was made but no response received
+          console.error("Request data:", err.request);
+          setError("No response from the server");
+        } else {
+          // Something else happened
+          console.error("Error message:", err.message);
+          setError("Request failed");
+        }
+      } finally {
+        setLoading(false); // Set loading to false after the request
+      }
+    };    
+
+    fetchEvents();
+  }, []);
 
   // Handle the search input change
   const handleSearchChange = (e) => {
@@ -33,6 +79,19 @@ const EventsSection = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
+
+  // Render the component
+  if (loading) {
+    return (
+      <div className="loading-indicator">
+        <ClipLoader size={50} color={"#123abc"} loading={loading} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
 
   return (
     <div>
@@ -138,4 +197,3 @@ const EventsSection = () => {
 };
 
 export default EventsSection;
-

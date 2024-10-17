@@ -8,21 +8,65 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState(null); // To store error messages
 
+  // Login function
   const login = async (email, password) => {
     setLoading(true);
+    setAuthError(null); // Reset error state before a new request
     try {
-      const response = await axios.post("https://your-django-backend.com/api/login/", {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/accounts/login/`, {
         email,
         password,
       });
 
-      const token = response.data.token;
-      localStorage.setItem("token", token); // Store token in localStorage
-      setToken(token);
-      // Navigation will happen where the login function is called
+      if (response.data.status === "success") {
+        const token = response.data.token;
+        localStorage.setItem("token", token); // Store token in localStorage
+        setToken(token);
+        console.log("Login successful:", response.data.message);
+      } else {
+        setAuthError(response.data.message || "Login failed"); // Handle generic login error
+      }
     } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setAuthError(error.response.data.message); // Set specific error message
+      } else {
+        setAuthError("An error occurred during login.");
+      }
       console.error("Login error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Signup function
+  const signup = async (email, password) => {
+    setLoading(true);
+    setAuthError(null); // Reset error state before a new request
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/accounts/signup/`, {
+        email,
+        password,
+      });
+
+      if (response.data.status === "success") {
+        const token = response.data.token;
+        localStorage.setItem("token", token); // Store token in localStorage
+        setToken(token);
+        console.log("Signup successful:", response.data.message);
+      } else if (response.data.status === "error" && response.data.errors?.email) {
+        setAuthError(response.data.errors.email[0]); // Extract and set specific email error
+      } else {
+        setAuthError("Signup failed");
+      }
+    } catch (error) {
+      if (error.response && error.response.data.errors?.email) {
+        setAuthError(error.response.data.errors.email[0]); // Set specific email error
+      } else {
+        setAuthError("An error occurred during signup.");
+      }
+      console.error("Signup error:", error);
     } finally {
       setLoading(false);
     }
@@ -46,7 +90,7 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ login, logout, isAuthenticated, loading }}>
+    <AuthContext.Provider value={{ login, signup, logout, isAuthenticated, loading, authError }}>
       {children}
     </AuthContext.Provider>
   );

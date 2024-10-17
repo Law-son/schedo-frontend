@@ -2,17 +2,30 @@ import React from "react";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const SignIn = () => {
-  const { login, loading } = useContext(AuthContext);
+  const { login, loading, authError } = useContext(AuthContext); // Access login, loading, and authError
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();  
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Snackbar state
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(email, password);
-    navigate("/dashboard");  // Navigate after successful login
+
+    if (!authError) {
+      setOpenSnackbar(true); // Show success snackbar
+      navigate("/dashboard"); // Navigate after successful login
+    } else {
+      setOpenSnackbar(true); // Show error snackbar
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -28,8 +41,8 @@ const SignIn = () => {
                   </span>
                 </a>
               </div>
-              <form>
-                <InputBox type="email" name="email" placeholder="Email" />
+              <form onSubmit={handleSubmit}>
+                <InputBox type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}  placeholder="Email" />
                 <InputBox
                   type="password"
                   name="password"
