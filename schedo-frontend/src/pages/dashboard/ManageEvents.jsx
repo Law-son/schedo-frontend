@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import eventsData from "../../components/events/eventsData";
+import { useEvent } from "../../context/EventContext";
 import DataTable from "react-data-table-component";
 import Button from "../../components/nativeComponents/Button";
 import { Edit, Eye, Trash } from "lucide-react";
@@ -20,6 +20,7 @@ const customStyles = {
 const ManageEvents = () => {
   const [filterText, setFilterText] = useState("");
   const [open, setOpen] = React.useState(false);
+  const { events, loading, error } = useEvent();
   const navigate = useNavigate();
 
   // Event Handlers for Edit, View, and Delete actions
@@ -44,7 +45,7 @@ const ManageEvents = () => {
   const columns = [
     {
       name: "ID",
-      selector: (row) => row.id,
+      selector: (row, index) => index + 1,
       sortable: true,
     },
     {
@@ -86,7 +87,7 @@ const ManageEvents = () => {
   ];
 
   // Filter attendees based on search input
-  const filteredEvents = eventsData.filter(
+  const filteredEvents = events.filter(
     (event) =>
       event.title.toLowerCase().includes(filterText.toLowerCase()) ||
       event.start_date.toLowerCase().includes(filterText.toLowerCase())

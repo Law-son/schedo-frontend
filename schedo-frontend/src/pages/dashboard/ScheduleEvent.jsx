@@ -1,67 +1,128 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import DatePicker from "react-datepicker";
+import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
-const ScheduleEvent = () => {/*************  ✨ Codeium Command 🌟  *************/
+const ScheduleEvent = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [startDateTime, setStartDateTime] = useState(new Date());
   const [endDateTime, setEndDateTime] = useState(new Date());
+  const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  // State variables for form inputs
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [category, setCategory] = useState("");
+  const [visibility, setVisibility] = useState("");
+  const [mode, setMode] = useState("");
 
   const formatDate = (dateTime) => {
     const year = dateTime.getFullYear();
-    const month = String(dateTime.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const day = String(dateTime.getDate()).padStart(2, '0');
-    
+    const month = String(dateTime.getMonth() + 1).padStart(2, "0");
+    const day = String(dateTime.getDate()).padStart(2, "0");
+
     return `${year}-${month}-${day}`;
   };
 
   const formatTime = (dateTime) => {
     let hours = dateTime.getHours();
-    const minutes = String(dateTime.getMinutes()).padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    
+    const minutes = String(dateTime.getMinutes()).padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+
     hours = hours % 12;
-    hours = hours ? hours : 12; // If hours = 0, make it 12 (for 12 AM)
-    
+    hours = hours ? hours : 12;
+
     return `${hours}:${minutes} ${ampm}`;
   };
-  
-  
 
-  // Function to handle file drop
   const onDrop = useCallback((acceptedFiles) => {
-    const file = acceptedFiles[0]; // Get the first file (since we allow only one image)
-    setSelectedImage(URL.createObjectURL(file)); // Preview the uploaded image
+    const file = acceptedFiles[0];
+    setSelectedFile(file);
+    setSelectedImage(URL.createObjectURL(file));
   }, []);
 
-  // Setting up the dropzone
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: "image/*", // Accept only image files
-    multiple: false, // Allow only one image at a time
+    accept: "image/*",
+    multiple: false,
   });
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Here you would typically handle the registration logic, e.g. sending data to a server
-    const formData = new FormData(e.target);
-    const registrationData = {
-      first_name: formData.get("first_name"),
-      last_name: formData.get("last_name"),
-      email: formData.get("email"),
-      phone_number: formData.get("phone_number"),
-      gender: formData.get("gender"),
-      event: id,
-    };
+    const submissionData = new FormData();
+    submissionData.append("title", title);
+    submissionData.append("description", description);
+    submissionData.append("location", location);
+    submissionData.append("category", category);
+    submissionData.append("start_date", formatDate(startDateTime));
+    submissionData.append("end_date", formatDate(endDateTime));
+    submissionData.append("start_time", formatTime(startDateTime));
+    submissionData.append("end_time", formatTime(endDateTime));
+    submissionData.append("is_public", visibility === "public");
+    submissionData.append("is_online", mode === "online");
 
-    console.log("Registration Data:", registrationData); // For testing, log the data
+    if (selectedFile) {
+      submissionData.append("thumbnail", selectedFile, selectedFile.name);
+    } else {
+      console.error("Selected image is not valid or undefined.");
+    }
 
-    // Optionally, navigate to a confirmation page or show a success message
-    // navigate('/confirmation'); // Uncomment and use this line if you have a confirmation page
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/events/create/`,
+        submissionData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setSnackbarMessage("Event created successfully!");
+      setSnackbarSeverity("success");
+      setOpenSnackbar(true);
+
+      // Reset form fields on success
+      setTitle("");
+      setDescription("");
+      setLocation("");
+      setCategory("");
+      setVisibility("");
+      setMode("");
+      setStartDateTime(new Date());
+      setEndDateTime(new Date());
+      setSelectedFile(null);
+      setSelectedImage(null);
+
+      console.log("Response:", response.data);
+    } catch (error) {
+      setSnackbarMessage("Error submitting form. Please try again.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+
+      console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (selectedImage) {
+        URL.revokeObjectURL(selectedImage);
+      }
+    };
+  }, [selectedImage]);
 
   return (
     <section className="lg:w-full">
@@ -117,6 +178,8 @@ const ScheduleEvent = () => {/*************  ✨ Codeium Command 🌟  *********
                   type="text"
                   id="title"
                   name="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)} // Update state on change
                   className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
@@ -131,9 +194,10 @@ const ScheduleEvent = () => {/*************  ✨ Codeium Command 🌟  *********
               </label>
               <div className="mt-1">
                 <textarea
-                  type="text"
                   id="description"
                   name="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)} // Update state on change
                   className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   rows={4}
                   required
@@ -149,9 +213,11 @@ const ScheduleEvent = () => {/*************  ✨ Codeium Command 🌟  *********
               </label>
               <div className="mt-1">
                 <input
-                  type="location"
+                  type="text"
                   id="location"
                   name="location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)} // Update state on change
                   className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
@@ -169,20 +235,22 @@ const ScheduleEvent = () => {/*************  ✨ Codeium Command 🌟  *********
                   <select
                     id="category"
                     name="category"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)} // Update state on change
                     className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
                   >
                     <option value="">Select a category</option>
-                    <option value="1">Concerts</option>
-                    <option value="2">Sports</option>
-                    <option value="3">Theater</option>
-                    <option value="4">Comedy</option>
-                    <option value="5">Music</option>
-                    <option value="6">Food and Drink</option>
-                    <option value="7">Arts and Culture</option>
-                    <option value="8">Community</option>
-                    <option value="8">Tech</option>
-                    <option value="9">Other</option>
+                    <option value="Concerts">Concerts</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Theater">Theater</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Music">Music</option>
+                    <option value="Food and Drink">Food and Drink</option>
+                    <option value="Arts and Culture">Arts and Culture</option>
+                    <option value="Community">Community</option>
+                    <option value="Tech">Tech</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
               </div>
@@ -197,6 +265,8 @@ const ScheduleEvent = () => {/*************  ✨ Codeium Command 🌟  *********
                   <select
                     id="visibility"
                     name="visibility"
+                    value={visibility}
+                    onChange={(e) => setVisibility(e.target.value)} // Update state on change
                     className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
                   >
@@ -210,7 +280,7 @@ const ScheduleEvent = () => {/*************  ✨ Codeium Command 🌟  *********
             <div className="flex flex-col md:flex-row md:justify-between">
               <div>
                 <label
-                  htmlFor="gender"
+                  htmlFor="startDateTime"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Start Date & Time
@@ -220,11 +290,13 @@ const ScheduleEvent = () => {/*************  ✨ Codeium Command 🌟  *********
                   onChange={(date) => setStartDateTime(date)}
                   showTimeSelect
                   dateFormat="Pp"
+                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  required
                 />
               </div>
-              <div className="mt-4 md:mt-0">
+              <div>
                 <label
-                  htmlFor="gender"
+                  htmlFor="endDateTime"
                   className="block text-sm font-medium text-gray-700"
                 >
                   End Date & Time
@@ -234,40 +306,59 @@ const ScheduleEvent = () => {/*************  ✨ Codeium Command 🌟  *********
                   onChange={(date) => setEndDateTime(date)}
                   showTimeSelect
                   dateFormat="Pp"
+                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  required
                 />
               </div>
             </div>
             <div>
-                <label
-                  htmlFor="mode"
-                  className="block text-sm font-medium text-gray-700"
+              <label
+                htmlFor="mode"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Mode
+              </label>
+              <div className="mt-1">
+                <select
+                  id="mode"
+                  name="mode"
+                  value={mode}
+                  onChange={(e) => setMode(e.target.value)} // Update state on change
+                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  required
                 >
-                  Mode of Event
-                </label>
-                <div className="mt-1">
-                  <select
-                    id="mode"
-                    name="mode"
-                    className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  >
-                    <option value="">Select mode of event</option>
-                    <option value="in_person">In-Person</option>
-                    <option value="online">Online</option>
-                  </select>
-                </div>
+                  <option value="">Select mode</option>
+                  <option value="online">Online</option>
+                  <option value="offline">Offline</option>
+                </select>
               </div>
+            </div>
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={loading}
               >
-                Schedule Event
+                {loading ? "Submitting..." : "Submit Event"}
               </button>
             </div>
           </form>
         </div>
       </div>
+      {/* Snackbar component */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </section>
   );
 };

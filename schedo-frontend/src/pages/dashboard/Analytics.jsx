@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useEvent } from "../../context/EventContext";
 import { Calendar, MapPin, Watch } from "lucide-react";
 import DataTable from "react-data-table-component";
-import eventsData from "../../components/events/eventsData";
-import attendees from "../../components/events/attendees";
 import { formatDate } from "../../utils/dateFormatter";
 
 // DataTable columns
 const columns = [
   {
     name: "ID",
-    selector: (row) => row.id,
+    selector: (row, index) => index + 1,
     sortable: true,
   },
   {
@@ -41,15 +40,18 @@ const customStyles = {
 
 const Analytics = () => {
   const [filterText, setFilterText] = useState(""); // State for search input
+  const { events, attendances, loading, error } = useEvent();
+  // console.log("events", events)
+  // console.log("attendances", attendances)
 
   // Calculate total events
-  const totalEvents = eventsData.length;
+  const totalEvents = events.length;
 
   // Calculate total attendees by summing up attendees for each event
-  const totalAttendees = attendees.reduce(
+  const totalAttendees = Array.isArray(attendances) ? attendances.reduce(
     (total, attendee) => total + attendee.number_of_attendees,
     0
-  );
+  ) : 0;
 
   // Function to calculate upcoming events within the next 7 days
   const getUpcomingEventsCount = () => {
@@ -57,31 +59,36 @@ const Analytics = () => {
     const threeWeeksFromNow = new Date();
     threeWeeksFromNow.setDate(currentDate.getDate() + 21);
 
-    return eventsData.filter((event) => {
+    return Array.isArray(events) ? events.filter((event) => {
       const eventStartDate = new Date(event.start_date);
       return eventStartDate >= currentDate && eventStartDate <= threeWeeksFromNow;
-    }).length;
+    }).length : 0;
   };
 
   // Function to fetch upcoming event within the next 7 days
-  const upcomingEvent = eventsData.find((event) => {
-    const currentDate = new Date();
-    const eventStartDate = new Date(event.start_date);
-    const oneWeekFromNow = new Date();
-    oneWeekFromNow.setDate(currentDate.getDate() + 7);
+  const upcomingEvent = events && events.length > 0
+    ? events.find((event) => {
+        const currentDate = new Date();
+        const eventStartDate = new Date(event.start_date);
+        const oneWeekFromNow = new Date();
+        oneWeekFromNow.setDate(currentDate.getDate() + 7);
 
-    return eventStartDate >= currentDate && eventStartDate <= oneWeekFromNow;
-  });
+        return eventStartDate >= currentDate && eventStartDate <= oneWeekFromNow;
+      })
+    : null;
 
   // Get the number of upcoming events
   const upcomingEvents = getUpcomingEventsCount();
 
-  // Filter attendees based on search input
-  const filteredEvents = attendees.filter(
-    (event) =>
-      event.title.toLowerCase().includes(filterText.toLowerCase()) ||
-      event.start_date.toLowerCase().includes(filterText.toLowerCase())
-  );
+  // Filter attendances based on search input
+  const filteredEvents =
+    Array.isArray(attendances)
+      ? attendances.filter(
+          (event) =>
+            event.title.toLowerCase().includes(filterText.toLowerCase()) ||
+            event.start_date.toLowerCase().includes(filterText.toLowerCase())
+        )
+      : [];
 
   return (
     <div className="flex flex-col bg-white h-[100vh]">

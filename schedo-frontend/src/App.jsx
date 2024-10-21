@@ -45,13 +45,14 @@ const routes = createBrowserRouter(
       <Route
         path="dashboard/*"
         element={
-          <RequireAuth redirectTo="/signin">
             <DashboardLayoutBranding />
-          </RequireAuth>
+          // <RequireAuth redirectTo="/signin">
+          //   <DashboardLayoutBranding />
+          // </RequireAuth>
         }
       >
         {/* Default route: Redirect from /dashboard to /dashboard/analytics */}
-        <Route index element={<Navigate to="analytics" />} />
+        <Route index element={<Navigate to="/dashboard/analytics" />} /> 
         <Route path="analytics" element={<Analytics />} />
         <Route path="events" element={<ManageEvents />} />
         <Route path="scan" element={<Scan />} />
@@ -65,6 +66,7 @@ const routes = createBrowserRouter(
     </Route>
   )
 );
+
 
 function App() {
   return (

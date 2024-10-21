@@ -10,6 +10,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { Outlet, useNavigate, useLocation } from "react-router-dom"; // Import useNavigate
+import AuthContext from "../../context/AuthContext";
 
 // Navigation for the dashboard, use segment names without "/dashboard"
 const NAVIGATION = [
@@ -61,6 +62,7 @@ export default function DashboardLayoutBranding(props) {
   const { window } = props;
   const location = useLocation();
   const navigate = useNavigate(); // Use navigate to handle navigation
+  const { logout } = React.useContext(AuthContext);
 
   const demoWindow = window !== undefined ? window() : undefined;
 
@@ -69,9 +71,18 @@ export default function DashboardLayoutBranding(props) {
     return {
       pathname: location.pathname,
       searchParams: new URLSearchParams(),
-      navigate: (path) => navigate(`/dashboard${path}`), // Correctly navigate with single "/dashboard/"
+      navigate: (path) => {
+        if (path === '/logout') {
+          // Call logout function and navigate to login page
+          logout().then(() => {
+            navigate("/signin"); // Redirect user to login page after successful logout
+          });
+        } else {
+          navigate(`/dashboard${path}`); // Correctly navigate with single "/dashboard/"
+        }
+      },
     };
-  }, [location.pathname, navigate]);
+  }, [location.pathname, navigate, logout]);
 
   return (
     <AppProvider

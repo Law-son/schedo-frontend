@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token", token); // Store token in localStorage
         setToken(token);
         console.log("Login successful:", response.data.message);
+        // console.log('Token stored in localStorage:', localStorage.getItem('token'));
         return true; // Return success
       } else if (
         response.data.status === "error" &&
@@ -104,10 +105,24 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    // Navigation will happen where the logout function is called
+  const logout = async () => {
+    try {
+        await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/accounts/logout/`,
+            {},
+            {
+                headers: {
+                    Authorization: `Token ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        localStorage.removeItem("token");
+        setToken(null);
+        // Navigation will happen where the logout function is called
+    } catch (error) {
+        console.error("Logout error:", error);
+    }
   };
 
   const isAuthenticated = !!token;
@@ -115,11 +130,11 @@ export const AuthProvider = ({ children }) => {
   // Provide token in the Axios Authorization header for protected routes
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      axios.defaults.headers.common["Authorization"] = `Token ${token}`;
     } else {
       delete axios.defaults.headers.common["Authorization"];
     }
-  }, [token]);
+  }, [token]);  
 
   return (
     <AuthContext.Provider
