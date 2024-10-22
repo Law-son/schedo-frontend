@@ -6,6 +6,7 @@ import { Edit, Eye, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import axios from 'axios';
 
 const customStyles = {
   headCells: {
@@ -32,9 +33,16 @@ const ManageEvents = () => {
     navigate(`/dashboard/view`, { state: event });
   };
 
-  const handleDelete = (event) => {
-    console.log("Delete event:", event);
-    setOpen(true);
+  const handleDelete = async (event) => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/events/archive/${event.id}/`,
+      );
+      setOpen(true);
+      window.location.reload();
+    } catch (error) {
+      console.error("Failed to archive event:", error);
+    }
   };
 
   const handleScheduleEvent = () => {
