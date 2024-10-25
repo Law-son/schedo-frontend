@@ -21,7 +21,7 @@ const customStyles = {
 const ManageEvents = () => {
   const [filterText, setFilterText] = useState("");
   const [open, setOpen] = React.useState(false);
-  const { events, loading, error } = useEvent();
+  const { events, archiveEvent, error } = useEvent();
   const navigate = useNavigate();
 
   // Event Handlers for Edit, View, and Delete actions
@@ -33,13 +33,10 @@ const ManageEvents = () => {
     navigate(`/dashboard/view`, { state: event });
   };
 
-  const handleDelete = async (event) => {
+  const handleArchive = async (event) => {
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/events/archive/${event.id}/`,
-      );
+      await archiveEvent(event.id);
       setOpen(true);
-      window.location.reload();
     } catch (error) {
       console.error("Failed to archive event:", error);
     }
@@ -83,7 +80,7 @@ const ManageEvents = () => {
             <Edit size={18} />
           </button>
           <button
-            onClick={() => handleDelete(row)}
+            onClick={() => handleArchive(row)}
             className="text-red-500 hover:text-red-700"
           >
             <Trash size={18} />

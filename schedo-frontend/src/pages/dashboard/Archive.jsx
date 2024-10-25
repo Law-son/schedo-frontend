@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import eventsData from "../../components/events/eventsData";
+import { useEvent } from "../../context/EventContext";
 import DataTable from "react-data-table-component";
 import Button from "../../components/nativeComponents/Button";
 import { History, Trash } from "lucide-react";
@@ -19,26 +19,18 @@ const customStyles = {
 
 const Archive = () => {
   const [filterText, setFilterText] = useState("");
+  const { archives = [], restoreEvent, deleteEvent, restoreAllEvents, deleteAllEvents, error } = useEvent();
   const [open, setOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // success or error
   const navigate = useNavigate();
 
-  // Dummy API request function
-  const fakeApiRequest = (shouldSucceed = true) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        shouldSucceed ? resolve("Success") : reject("Error");
-      }, 1000); // Simulate a 1-second delay
-    });
-  };
+  console.log("Archives in Archive Component:", archives);
 
   // Event Handlers for Edit, View, and Delete actions
   const handleRestore = async (event) => {
     try {
-      // Perform restore operation (fake API request)
-      await fakeApiRequest(true); // Simulate success
-
+      await restoreEvent(event.id);
       // Show success snackbar
       setSnackbarMessage("Event restored successfully");
       setSnackbarSeverity("success");
@@ -53,8 +45,7 @@ const Archive = () => {
 
   const handleDelete = async (event) => {
     try {
-      // Perform delete operation (fake API request)
-      await fakeApiRequest(false); // Simulate failure
+      await deleteEvent(event.id);
 
       // Show success snackbar
       setSnackbarMessage("Event deleted successfully");
@@ -70,8 +61,7 @@ const Archive = () => {
 
   const handleRestoreAll = async () => {
     try {
-      // Perform restore all operation (fake API request)
-      await fakeApiRequest(true); // Simulate success
+      await restoreAllEvents();
 
       // Show success snackbar
       setSnackbarMessage("All events restored successfully");
@@ -87,8 +77,7 @@ const Archive = () => {
 
   const handleDeleteAll = async () => {
     try {
-      // Perform delete all operation (fake API request)
-      await fakeApiRequest(false); // Simulate failure
+      await deleteAllEvents();
 
       // Show success snackbar
       setSnackbarMessage("All events deleted successfully");
@@ -106,7 +95,7 @@ const Archive = () => {
   const columns = [
     {
       name: "ID",
-      selector: (row) => row.id,
+      selector: (row, index) => index + 1,
       sortable: true,
     },
     {
@@ -142,11 +131,12 @@ const Archive = () => {
   ];
 
   // Filter events based on search input
-  const filteredEvents = eventsData.filter(
-    (event) =>
-      event.title.toLowerCase().includes(filterText.toLowerCase()) ||
-      event.start_date.toLowerCase().includes(filterText.toLowerCase())
-  );
+  const filteredEvents =
+    archives?.filter(
+      (event) =>
+        event?.title?.toLowerCase().includes(filterText.toLowerCase()) ||
+        event?.start_date?.toLowerCase().includes(filterText.toLowerCase())
+    ) || [];
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
