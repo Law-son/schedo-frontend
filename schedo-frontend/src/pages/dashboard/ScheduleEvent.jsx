@@ -5,6 +5,8 @@ import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
+import { useEvent } from "../../context/EventContext";
 
 const ScheduleEvent = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -23,6 +25,8 @@ const ScheduleEvent = () => {
   const [category, setCategory] = useState("");
   const [visibility, setVisibility] = useState("");
   const [mode, setMode] = useState("");
+  const { events, fetchUserEvents, error } = useEvent();
+  const navigate = useNavigate();
 
   const formatDate = (dateTime) => {
     const year = dateTime.getFullYear();
@@ -105,6 +109,8 @@ const ScheduleEvent = () => {
       setSelectedImage(null);
 
       console.log("Response:", response.data);
+      await fetchUserEvents();
+      navigate(`/dashboard/events`);
     } catch (error) {
       setSnackbarMessage("Error submitting form. Please try again.");
       setSnackbarSeverity("error");

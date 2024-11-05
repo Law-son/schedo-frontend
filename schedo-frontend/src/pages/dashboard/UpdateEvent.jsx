@@ -2,15 +2,18 @@ import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEvent } from "../../context/EventContext";
+import axios from 'axios';
 
 const UpdateEvent = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [startDateTime, setStartDateTime] = useState(new Date());
   const [endDateTime, setEndDateTime] = useState(new Date());
+  const { events, fetchUserEvents, error } = useEvent();
+  const navigate = useNavigate();
   const location = useLocation();
   const data = location.state;
-  console.log(data.category);
 
   // Check if event is defined
   if (!data) {
@@ -29,6 +32,7 @@ const UpdateEvent = () => {
     location: eventLocation,
     category: eventCategory,
     is_online: eventIsOnline,
+    is_public: eventVisibility,
     thumbnail: eventThumbnail,
   } = data;
 
@@ -37,6 +41,7 @@ const UpdateEvent = () => {
   const [locationState, setLocationState] = useState(eventLocation);
   const [categoryState, setCategoryState] = useState(eventCategory);
   const [isOnlineState, setIsOnlineState] = useState(eventIsOnline);
+  const [visibilityState, setVisibilityState] = useState(eventVisibility);
 
   const formatDate = (dateTime) => {
     const year = dateTime.getFullYear();
@@ -44,6 +49,44 @@ const UpdateEvent = () => {
     const day = String(dateTime.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("location", locationState);
+    formData.append("category", categoryState);
+    formData.append("is_public", visibilityState);
+    formData.append("start_date", formatDate(startDateTime));
+    formData.append("start_time", formatTime(startDateTime));
+    formData.append("end_date", formatDate(endDateTime));
+    formData.append("end_time", formatTime(endDateTime));
+    formData.append("is_online", isOnlineState);
+
+    if (selectedImage) {
+      formData.append("thumbnail", selectedImage);
+    }
+
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/events/update/${id}/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Response:", response.data);
+      await fetchUserEvents();
+      navigate(`/dashboard/events`);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const formatTime = (dateTime) => {
@@ -69,27 +112,6 @@ const UpdateEvent = () => {
     accept: "image/*", // Accept only image files
     multiple: false, // Allow only one image at a time
   });
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Here you would typically handle the registration logic, e.g. sending data to a server
-    const formData = new FormData(e.target);
-    const registrationData = {
-      first_name: formData.get("first_name"),
-      last_name: formData.get("last_name"),
-      email: formData.get("email"),
-      phone_number: formData.get("phone_number"),
-      gender: formData.get("gender"),
-      event: id,
-    };
-
-    console.log("Registration Data:", registrationData); // For testing, log the data
-
-    // Optionally, navigate to a confirmation page or show a success message
-    // navigate('/confirmation'); // Uncomment and use this line if you have a confirmation page
-  };
 
   return (
     <section className="lg:w-full">
@@ -207,16 +229,16 @@ const UpdateEvent = () => {
                     required
                   >
                     <option value="">Select a category</option>
-                    <option value="1">Concerts</option>
-                    <option value="2">Sports</option>
-                    <option value="3">Theater</option>
-                    <option value="4">Comedy</option>
-                    <option value="5">Music</option>
-                    <option value="6">Food and Drink</option>
-                    <option value="7">Arts and Culture</option>
-                    <option value="8">Community</option>
-                    <option value="8">Tech</option>
-                    <option value="9">Other</option>
+                    <option value="Concerts">Concerts</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Theater">Theater</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Music">Music</option>
+                    <option value="Food and Drink">Food and Drink</option>
+                    <option value="Arts and Culture">Arts and Culture</option>
+                    <option value="Community">Community</option> 
+                    <option value="Tech">Tech</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
               </div>
@@ -232,8 +254,8 @@ const UpdateEvent = () => {
                     id="visibility"
                     name="visibility"
                     className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    value={isOnlineState}
-                    onChange={(e) => setIsOnlineState(e.target.value)}
+                    value={visibilityState ? 'public' : 'private'}
+                    onChange={(e) => setVisibilityState(e.target.value === 'public' ? true : false)}
                     required
                   >
                     <option value="">Select visibility</option>
@@ -286,6 +308,8 @@ const UpdateEvent = () => {
                   name="mode"
                   className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   required
+                  value={isOnlineState ? 'in-person' : 'online'}
+                  onChange={(e) => setIsOnlineState(e.target.value === 'online' ? true : false)}
                 >
                   <option value="">Select mode of event</option>
                   <option value="in_person">In-Person</option>

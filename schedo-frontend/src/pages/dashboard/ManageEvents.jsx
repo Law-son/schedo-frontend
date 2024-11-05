@@ -6,7 +6,6 @@ import { Edit, Eye, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import axios from 'axios';
 
 const customStyles = {
   headCells: {
@@ -27,6 +26,7 @@ const ManageEvents = () => {
   // Event Handlers for Edit, View, and Delete actions
   const handleEdit = (event) => {
     navigate(`/dashboard/update`, { state: event });
+    console.log("selected event: ", event);
   };
 
   const handleView = (event) => {
