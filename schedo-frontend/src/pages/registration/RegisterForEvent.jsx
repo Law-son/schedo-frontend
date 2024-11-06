@@ -1,14 +1,20 @@
-import { useLocation } from 'react-router-dom';
+import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Calendar, MapPin, Tag, Watch } from "lucide-react";
 import Button from "../../components/nativeComponents/Button";
 import { useEvent } from "../../context/EventContext";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/dateFormatter";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const RegisterForEvent = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+  const [open, setOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
   // Destructure event details from location state
   const {
     id,
@@ -25,25 +31,72 @@ const RegisterForEvent = () => {
 
   const formattedDate = formatDate(start_date);
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   // Handle form submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Here you would typically handle the registration logic, e.g. sending data to a server
+    setIsSubmitting(true);
+
     const formData = new FormData(e.target);
+
     const registrationData = {
       first_name: formData.get("first_name"),
       last_name: formData.get("last_name"),
       email: formData.get("email"),
       phone_number: formData.get("phone_number"),
       gender: formData.get("gender"),
-      event: id
+      event: parseInt(id, 10),
     };
 
-    console.log("Registration Data:", registrationData); // For testing, log the data
+    console.log("form data: ", registrationData);
 
-    // Optionally, navigate to a confirmation page or show a success message
-    // navigate('/confirmation'); // Uncomment and use this line if you have a confirmation page
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/registrations/attendee/create/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Set the correct content type
+        },
+        body: JSON.stringify(registrationData), // Convert the data to JSON
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          // Changed from data.success to data.status === "success"
+          setSnackbarMessage("Registration successful");
+          setSnackbarSeverity("success");
+          setOpen(true);
+
+          // Clear the input fields
+          e.target.reset();
+
+          // Optionally, navigate to a confirmation page or show a success message
+          // navigate('/confirmation'); // Uncomment and use this line if you have a confirmation page
+        } else {
+          setSnackbarMessage(data.message || "Registration failed"); // Display the error message from the backend if available
+          setSnackbarSeverity("error");
+          setOpen(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error submitting registration:", error);
+        setSnackbarMessage("Registration failed");
+        setSnackbarSeverity("error");
+        setOpen(true);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
@@ -84,7 +137,10 @@ const RegisterForEvent = () => {
         <div className="w-full text-left lg:w-1/2 relative lg:ml-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="first_name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 First Name
               </label>
               <div className="mt-1">
@@ -98,7 +154,10 @@ const RegisterForEvent = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="last_name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Last Name
               </label>
               <div className="mt-1">
@@ -112,7 +171,10 @@ const RegisterForEvent = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email
               </label>
               <div className="mt-1">
@@ -126,7 +188,10 @@ const RegisterForEvent = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="phone_number"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Phone Number
               </label>
               <div className="mt-1">
@@ -140,7 +205,10 @@ const RegisterForEvent = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="gender"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Gender
               </label>
               <div className="mt-1">
@@ -161,13 +229,24 @@ const RegisterForEvent = () => {
               <button
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={isSubmitting}
               >
-                Register
+                {isSubmitting ? "Registering ..." : "Register"}
               </button>
             </div>
           </form>
         </div>
       </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={snackbarSeverity} // dynamic severity
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage} {/* dynamic message */}
+        </Alert>
+      </Snackbar>
     </section>
   );
 };

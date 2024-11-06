@@ -1,14 +1,43 @@
 import React, { useState } from 'react';
 import QrScanner from 'react-qr-scanner';
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import axios from 'axios';
 
 const Scan = () => {
   const [data, setData] = useState('No result');
   const [scanning, setScanning] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [scannedOnce, setScannedOnce] = useState(false);
 
-  const handleScan = (result) => {
-    if (result && result.text) { // Check if result has text property
-      setData(result.text); // Set data to the text property of the result object
-      setScanning(false); // Stop scanning after a successful scan
+  const handleScan = async (result) => {
+    if (result && result.text && !scannedOnce) {
+      setData(result.text);
+      setScanning(false);
+      setScannedOnce(true);  // Prevent further scans until reset
+
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/registrations/ticket/scan/${result.text}/`);
+        const status = response.data.status;
+
+        if (status === 'Registered') {
+          setSnackbarSeverity('success');
+          setSnackbarMessage('User is registered and has a valid ticket!');
+        } else if (status === 'Ticket used') {
+          setSnackbarSeverity('warning');
+          setSnackbarMessage('This ticket has already been used.');
+        } else {
+          setSnackbarSeverity('error');
+          setSnackbarMessage('User is not registered.');
+        }
+      } catch (error) {
+        setSnackbarSeverity('error');
+        setSnackbarMessage('Failed to verify ticket. Please try again.');
+      } finally {
+        setOpen(true);
+      }
     }
   };
 
@@ -17,15 +46,20 @@ const Scan = () => {
   };
 
   const handleRestart = () => {
-    setScanning(true); // Restart scanning
+    setScanning(true);
     setData('No result');
+    setScannedOnce(false);  // Allow scanning again
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
     <div>
       {scanning ? (
         <div>
-          <h2>QR Code Scanner</h2> {/* Optional title for clarity */}
+          <h2>QR Code Scanner</h2>
           <QrScanner
             delay={300}
             onError={handleError}
@@ -58,13 +92,23 @@ const Scan = () => {
               cursor: 'pointer',
               transition: 'background-color 0.3s',
             }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'} // Darker blue on hover
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'} // Reset on mouse out
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
           >
             Scan Again
           </button>
         </div>
       )}
+      <Snackbar open={open} autoHideDuration={10000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

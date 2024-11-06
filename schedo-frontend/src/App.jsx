@@ -13,6 +13,7 @@ import SignUp from "./pages/authentication/SignUp";
 import SignIn from "./pages/authentication/SignIn";
 import Error404 from "./pages/Error404";
 import EventSummary from "./pages/eventSummary/EventSummary";
+import Ticket from "./pages/tickets/Ticket";
 import DashboardLayoutBranding from "./pages/dashboard/DashboardLayoutBranding";
 
 // Layout
@@ -40,6 +41,7 @@ const routes = createBrowserRouter(
       <Route path="signin" element={<SignIn />} />
       <Route path="event-summary/:id" element={<EventSummary />} />
       <Route path="register/" element={<RegisterForEvent />} />
+      <Route path="ticket/:id" element={<Ticket />} />
 
       {/* Protect dashboard routes */}
       <Route
