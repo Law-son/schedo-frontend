@@ -68,7 +68,7 @@ const EventCard = ({
 
   return (
     <div
-      className="rounded-lg overflow-hidden shadow-lg hover:scale-105 transition duration-500"
+      className="flex flex-col justify-between rounded-lg overflow-hidden shadow-lg hover:scale-105 transition duration-500"
       onClick={handleEventClick}
     >
       <img
