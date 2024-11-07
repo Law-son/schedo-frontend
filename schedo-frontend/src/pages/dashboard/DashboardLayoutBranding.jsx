@@ -9,10 +9,9 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
-import { Outlet, useNavigate, useLocation } from "react-router-dom"; // Import useNavigate
+import { Outlet, useNavigate, useLocation } from "react-router-dom"; 
 import AuthContext from "../../context/AuthContext";
 
-// Navigation for the dashboard, use segment names without "/dashboard"
 const NAVIGATION = [
   {
     segment: "analytics",
@@ -41,7 +40,6 @@ const NAVIGATION = [
   },
 ];
 
-// Theme setup for the dashboard layout
 const demoTheme = createTheme({
   cssVariables: {
     colorSchemeSelector: "data-toolpad-color-scheme",
@@ -61,24 +59,22 @@ const demoTheme = createTheme({
 export default function DashboardLayoutBranding(props) {
   const { window } = props;
   const location = useLocation();
-  const navigate = useNavigate(); // Use navigate to handle navigation
+  const navigate = useNavigate(); 
   const { logout } = React.useContext(AuthContext);
 
   const demoWindow = window !== undefined ? window() : undefined;
 
-  // Update navigation handling to correctly use "/dashboard" as base path only once
   const router = React.useMemo(() => {
     return {
       pathname: location.pathname,
       searchParams: new URLSearchParams(),
       navigate: (path) => {
         if (path === '/logout') {
-          // Call logout function and navigate to login page
           logout().then(() => {
-            navigate("/signin"); // Redirect user to login page after successful logout
+            navigate("/signin");
           });
         } else {
-          navigate(`/dashboard${path}`); // Correctly navigate with single "/dashboard/"
+          navigate(`/dashboard${path}`);
         }
       },
     };
@@ -86,7 +82,10 @@ export default function DashboardLayoutBranding(props) {
 
   return (
     <AppProvider
-      navigation={NAVIGATION} // Leave navigation segments as simple strings (e.g. "analytics")
+      navigation={NAVIGATION.map((nav) => ({
+        ...nav,
+        selected: location.pathname.includes(`/dashboard/${nav.segment}`),
+      }))}
       branding={{
         logo: (
           <span className="self-center whitespace-nowrap text-2xl font-semibold text-primary-blue md:text-4xl lg:text-3xl">

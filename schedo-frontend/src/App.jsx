@@ -48,9 +48,6 @@ const routes = createBrowserRouter(
         path="dashboard/*"
         element={
             <DashboardLayoutBranding />
-          // <RequireAuth redirectTo="/signin">
-          //   <DashboardLayoutBranding />
-          // </RequireAuth>
         }
       >
         {/* Default route: Redirect from /dashboard to /dashboard/analytics */}
